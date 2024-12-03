@@ -20,7 +20,7 @@ def part2(args):
     res = 0
     do = True
     for l in fileinput.input(args):
-        for s in re.split("(do\(\))|(don't\(\))", l):
+        for s in re.split("(do(?:n't)?\(\))", l):
             if s == "do()":
                 do = True
             elif s == "don't()":
