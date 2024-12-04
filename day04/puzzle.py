@@ -47,6 +47,34 @@ def part1(matrix):
 
     return count
 
+def part2(matrix):
+    count = 0
+    w = len(matrix[0])
+    h = len(matrix)
+
+    for r in range(1, h - 1):
+        for c in range(1, w - 1):
+            if matrix[r][c] != "A":
+                continue
+
+            if (matrix[r-1][c-1] == "M" and matrix[r+1][c+1] == "S" and
+                matrix[r+1][c-1] == "M" and matrix[r-1][c+1] == "S"):
+                count += 1
+
+            if (matrix[r-1][c-1] == "S" and matrix[r+1][c+1] == "M" and
+                matrix[r+1][c-1] == "S" and matrix[r-1][c+1] == "M"):
+                count += 1
+
+            if (matrix[r-1][c-1] == "M" and matrix[r+1][c+1] == "S" and
+                matrix[r+1][c-1] == "S" and matrix[r-1][c+1] == "M"):
+                count += 1
+
+            if (matrix[r-1][c-1] == "S" and matrix[r+1][c+1] == "M" and
+                matrix[r+1][c-1] == "M" and matrix[r-1][c+1] == "S"):
+                count += 1
+    return count
+
+
 matrix = []
 for l in fileinput.input(sys.argv[1:]):
     row = []
@@ -56,3 +84,4 @@ for l in fileinput.input(sys.argv[1:]):
     matrix.append(row)
 
 print(part1(matrix))
+print(part2(matrix))
