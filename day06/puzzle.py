@@ -10,7 +10,7 @@ class Direction(Enum):
     WEST = 4
 
 def check_obstacle(pos, matrix):
-    return matrix[pos[0]][pos[1]] == "#"
+    return matrix[pos[0]][pos[1]] in ('#', 'O')
 
 def turn_right(direction, pos):
     match direction:
@@ -25,15 +25,21 @@ def turn_right(direction, pos):
 
 def walk(pos, direction, matrix):
     unique_positions = {pos}
+    been_there = {()}
+    loop = False
     while True:
         if (pos[0] < 0 or pos[1] < 0 or pos[0] == len(matrix) or pos[1] ==
             len(matrix[0])):
             break
 
+        if (pos, direction) in been_there:
+            return unique_positions, True
+
         if check_obstacle(pos, matrix):
             direction, pos = turn_right(direction, pos)
         else:
             unique_positions.add(pos)
+            been_there.add((pos, direction))
 
         if direction == Direction.NORTH:
             pos = (pos[0] - 1, pos[1])
@@ -44,7 +50,11 @@ def walk(pos, direction, matrix):
         elif direction == Direction.WEST:
             pos = (pos[0], pos[1] - 1)
 
-    return unique_positions
+    return unique_positions, False
+
+def draw(matrix):
+    for row in matrix:
+        print(*row)
 
 matrix = []
 pos = ()
@@ -67,5 +77,18 @@ for x, l in enumerate(fileinput.input()):
             pos = (x,y)
             direction = Direction.WEST
 
+path, _ = walk(pos, direction, matrix)
+print(len(path))
 
-print(len(walk(pos, direction, matrix)))
+# Since we can only place one obstacle, placing them outside of the guard's
+# original ptah would have no effect. We just need to check what happens if we
+# place an obstacle in her path.
+count = 0
+for x, y in path:
+    matrix[x][y] = 'O'
+    _, loop = walk(pos, direction, matrix)
+    if loop:
+        count += 1
+    matrix[x][y] = '.'
+
+print(count)
