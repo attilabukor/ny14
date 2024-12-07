@@ -2,15 +2,7 @@
 
 import fileinput
 
-sum = 0
-for l in fileinput.input():
-    val, rest = l.strip().split(":")
-    val = int(val)
-    nums = []
-    for n in rest.strip().split():
-        n = int(n)
-        nums.append(int(n))
-
+def check(val, nums):
     res = [nums[0]]
     for n in nums[1:]:
         partial = []
@@ -20,6 +12,20 @@ for l in fileinput.input():
         res = partial
 
     if val in res:
-        sum += val
+        return True
+    else:
+        return False
 
-print(sum)
+part1 = 0
+for l in fileinput.input():
+    val, rest = l.strip().split(":")
+    val = int(val)
+    nums = []
+    for n in rest.strip().split():
+        n = int(n)
+        nums.append(int(n))
+
+    if check(val, nums):
+        part1 += val
+
+print(part1)
