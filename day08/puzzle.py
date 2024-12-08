@@ -22,6 +22,7 @@ for i, l in enumerate(fileinput.input()):
     matrix.append(row)
 
 antinodes = set()
+antinodes_pt2 = set()
 
 for f in antennae:
     for a in itertools.combinations(antennae[f], 2):
@@ -38,5 +39,24 @@ for f in antennae:
             matrix[x2][y2] = '#'
             antinodes.add((x2, y2))
 
+        # pt 2
+        antinodes_pt2.add((a[0][0], a[0][1]))
+        antinodes_pt2.add((a[1][0], a[1][1]))
+        x = a[0][0] - diff[0]
+        y = a[0][1] - diff[1]
+        while check_coordinates(x, y, matrix):
+            matrix[x][y] = '#'
+            antinodes_pt2.add((x, y))
+            x -= diff[0]
+            y -= diff[1]
+        x = a[1][0] + diff[0]
+        y = a[1][1] + diff[1]
+        while check_coordinates(x, y, matrix):
+            matrix[x][y] = '#'
+            antinodes_pt2.add((x, y))
+            x += diff[0]
+            y += diff[1]
+
 #draw(matrix)
 print(len(antinodes))
+print(len(antinodes_pt2))
