@@ -11,12 +11,14 @@ def draw(matrix):
                 print(c, end="")
         print()
 
-def walk(matrix, start, found_peaks, prev=None):
+def walk(matrix, start, found_peaks, rating=False, prev=None):
     x = start[0]
     y = start[1]
     start_val = matrix[x][y]
     if start_val == 9:
-        if start in found_peaks:
+        if rating:
+            return 1
+        elif start in found_peaks:
             return 0
         else:
             found_peaks.append(start)
@@ -26,13 +28,13 @@ def walk(matrix, start, found_peaks, prev=None):
     sum = 0
 
     if x > 0 and matrix[x-1][y] == start_val + 1 and prev != (x-1,y):
-        sum += walk(matrix, (x-1,y), found_peaks, start)
+        sum += walk(matrix, (x-1,y), found_peaks, rating, start)
     if x + 1< len(matrix) and matrix[x+1][y] == start_val + 1 and prev != (x+1,y):
-        sum += walk(matrix, (x+1,y), found_peaks, start)
+        sum += walk(matrix, (x+1,y), found_peaks, rating, start)
     if y > 0 and matrix[x][y-1] == start_val + 1 and prev != (x,y-1):
-        sum += walk(matrix, (x,y-1), found_peaks, start)
+        sum += walk(matrix, (x,y-1), found_peaks, rating, start)
     if y + 1 < len(matrix) and matrix[x][y+1] == start_val + 1 and prev != (x,y+1):
-        sum += walk(matrix, (x,y+1), found_peaks, start)
+        sum += walk(matrix, (x,y+1), found_peaks, rating, start)
 
     return sum
 
@@ -55,8 +57,15 @@ for i, l in enumerate(fileinput.input()):
 
 sum = 0
 for t in trailheads:
-    score = walk(island, t, [])
+    score = walk(island, t, [], False)
     sum += score
 
 print(sum)
 
+
+sum = 0
+for t in trailheads:
+    score = walk(island, t, [], True)
+    sum += score
+
+print(sum)
