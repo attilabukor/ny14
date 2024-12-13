@@ -13,21 +13,23 @@ class Claw:
                 + self.prize.__repr__())
 
     def check(self):
-        x = 0
-        y = 0
-        m = None
-        for a in range(0, 100):
-            for b in range(0, 100):
-                x = a * c.button_a[0] + b * c.button_b[0]
-                y = a * c.button_a[1] + b * c.button_b[1]
-                if x == c.prize[0] and y == c.prize[1]:
-                    if m == None:
-                        m = a * 3 + b
-                    else:
-                        m = min(m, a * 3 + b)
-                elif x > c.prize[0] or y > c.prize[1]:
-                    break
-        return m
+        a = self.button_a[0]
+        a2 = self.button_a[1]
+        b = self.button_b[0]
+        b2 = self.button_b[1]
+        c = self.prize[0]
+        c2 = self.prize[1]
+        det = a * b2 - b * a2
+
+        assert det != 0, "Determinant is 0, which is not yet handled"
+
+        x = (c * b2 - b * c2) / det
+        y = (a * c2 - c * a2) / det
+        if x % 1 == 0 and y % 1 == 0:
+            return int(x) * 3 + int(y)
+        else:
+            return None
+
 
 claws = []
 claw = Claw()
@@ -50,6 +52,7 @@ for l in fileinput.input():
 claws.append(claw)
 
 s = 0
+s2 = 0
 for c in claws:
     price = c.check()
     if price != None:
@@ -58,4 +61,14 @@ for c in claws:
     #else:
         #print(c)
 
+    c2 = c
+    c2.prize = (c2.prize[0] + 10000000000000, c2.prize[1] + 10000000000000)
+    price = c2.check()
+    if price != None:
+        s2 += price
+        #print(">", c, price)
+    #else:
+        #print(c)
+
 print(s)
+print(s2)
