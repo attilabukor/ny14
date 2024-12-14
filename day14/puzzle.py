@@ -14,10 +14,8 @@ class Robot:
     vel = (0, 0)
 
 def predict_location(pos, vel, seconds, width, height):
-    for i in range(0, seconds):
-        pos = step_robot(pos, vel, width, height)
-
-    return pos
+    return ((pos[0] + vel[0] * seconds) % width,
+            (pos[1] + vel[1] * seconds) % height)
 
 def step_robot(pos, vel, width, height):
     return ((pos[0] + vel[0]) % width, (pos[1] + vel[1]) % height)
@@ -50,15 +48,15 @@ for line in fileinput.input():
     pos = (int(m[0]), int(m[1]))
     vel = (int(m[2]), int(m[3]))
 
-    pos = predict_location(pos, vel, 100, width, height)
-    q = quadrant(pos, width, height)
-    if q != None:
-        quadrants[q] += 1
-
     r = Robot()
     r.pos=pos
     r.vel=vel
     robots.append(r)
+
+    pos = predict_location(pos, vel, 100, width, height)
+    q = quadrant(pos, width, height)
+    if q != None:
+        quadrants[q] += 1
 
 print(quadrants)
 print(quadrants['tl'] * quadrants['tr'] * quadrants['bl'] * quadrants['br'])
@@ -66,6 +64,6 @@ print(quadrants['tl'] * quadrants['tr'] * quadrants['bl'] * quadrants['br'])
 for s in range(0, width*height):
     img = Image.new('RGB', (width, height),color=(255,255,255))
     for r in robots:
-        img.putpixel(r.pos, (35,161,60))
-        r.pos=(step_robot(r.pos, r.vel, width, height))
+        pos = predict_location(r.pos, r.vel, s, width, height)
+        img.putpixel(pos, (35,161,60))
     img.save('renders/' + str(s).zfill(5) + '.jpg')
